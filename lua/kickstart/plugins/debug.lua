@@ -66,6 +66,7 @@ return {
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'
+    local tree_api = require 'nvim-tree.api'
 
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
@@ -119,9 +120,18 @@ return {
     --   vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
     -- end
 
-    dap.listeners.after.event_initialized['dapui_config'] = dapui.open
-    dap.listeners.before.event_terminated['dapui_config'] = dapui.close
-    dap.listeners.before.event_exited['dapui_config'] = dapui.close
+    dap.listeners.after.event_initialized['dapui_config'] = function()
+      tree_api.tree.close()
+      dapui.open()
+    end
+    dap.listeners.before.event_terminated['dapui_config'] = function()
+      dapui.close()
+      tree_api.tree.open { focus = false }
+    end
+    dap.listeners.before.event_exited['dapui_config'] = function()
+      dapui.close()
+      tree_api.tree.open { focus = false }
+    end
 
     -- Install golang specific config
     require('dap-go').setup {
