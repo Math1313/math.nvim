@@ -618,6 +618,7 @@ require('lazy').setup({
         'stylua', -- Used to format Lua code
         -- You can add other tools here that you want Mason to install
         'pylint',
+        'jupytext',
       })
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
